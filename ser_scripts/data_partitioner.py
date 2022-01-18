@@ -4,7 +4,7 @@ import itertools
 import math
 
 def _load_preset_dataset_partitions(data, subset, dataset_args):
-    # Retrieve the preset split for the wanted dataset
+    # Retrieve the preset split for the wanted dataset. Splits stored in datasets/dataset_name/split.csv
     data.load_dataset(subset)
     path = getattr(data, subset).path
     if subset != 'esd':
@@ -61,6 +61,7 @@ def _random_actor_split(df, train, test, val, seed):
 
 
 def _split_by_col(df, col, split_function, train, test, val, seed):
+    # Split the dataframe on col before running the split_function. Usually used for splitting on gender before actor_ids
     options = set(df[col])
     data_by_col = []
     for df_by_col in [df.loc[df[col] == value] for value in options]:
@@ -74,6 +75,8 @@ def _split_by_col(df, col, split_function, train, test, val, seed):
 
 
 def _load_dataset_partitions(data, subset, dataset_args, seed):
+    # Split the dataset by gender, actor_ids and language, depending on which dataset it is
+
     subset_df = data.load_dataset(subset)
     if subset in ['cremad', 'oreau', 'ravdess', 'subesco', 'emodb', 'mesd', 'emovo', 'emouerj']:
         # Split on gender before partitioning samples to the different splits
@@ -107,23 +110,27 @@ def _load_dataset_partitions(data, subset, dataset_args, seed):
 
 
 def partition_datasets(data, dataset_list, dataset_args, seed):
+    # Load the data for the sets listed in dataset_list, either from the preset data-splits, or randomly split 
+
     partitioned_data = []
     for subset in dataset_list:
         if dataset_args.use_preset_split:
             train_df, test_df, val_df = _load_preset_dataset_partitions(data, subset, dataset_args)
+
+            # TODO: Proper fix
+            bad_path = 'home/fellut/speech_emotion_recognition/datasets/'
+            good_path = data.dataset_path
+            train_df['wav_tele_path'] = train_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
+            test_df['wav_tele_path'] = test_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
+            val_df['wav_tele_path'] = val_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
+
+            train_df['wav_path'] = train_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
+            test_df['wav_path'] = test_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
+            val_df['wav_path'] = val_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
+
         else:
             train_df, test_df, val_df = _load_dataset_partitions(data, subset, dataset_args, seed)
         
-        # TODO: Proper fix
-        bad_path = 'home/fellut/speech_emotion_recognition/datasets/'
-        good_path = data.dataset_path
-        train_df['wav_tele_path'] = train_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
-        test_df['wav_tele_path'] = test_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
-        val_df['wav_tele_path'] = val_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
-
-        train_df['wav_path'] = train_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
-        test_df['wav_path'] = test_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
-        val_df['wav_path'] = val_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
         
         partitioned_data.append({
             'train': train_df,
@@ -164,6 +171,8 @@ def k_fold_actor_split(df, k, seed):
 
 
 def _load_dataset_partitions_xval(data, subset, dataset_args, seed):
+    # k-fold split the dataset by gender, actor_ids and language, depending on which dataset it is
+
     subset_df = data.load_dataset(subset)
 
     if subset in ['cremad', 'oreau', 'ravdess', 'subesco', 'emodb', 'mesd']:
@@ -208,6 +217,8 @@ def _load_dataset_partitions_xval(data, subset, dataset_args, seed):
 
 
 def partition_datasets_xval(data, dataset_list, dataset_args, seed):
+    # Load the data for the sets listed in dataset_list, and split it into k folds
+
     np.random.seed(seed)
 
     splits_by_subset = {}

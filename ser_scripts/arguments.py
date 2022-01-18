@@ -29,7 +29,7 @@ class ModelArguments:
     )
     use_weighted_layer_sum: Optional[bool] = field(
         default=False,
-        metadata={"help": "Whether to use the outputs of all of the transformer-layers or just the last."},
+        metadata={"help": "Whether to use the outputs of all of the transformer-layers or just the last. OOM-errors may occur if not careful. See See Wav2Vec2ForSequenceClassificationMultiLayer for quickfix"},
     )
     upload_model: Optional[bool] = field(
         default=False,
@@ -51,7 +51,7 @@ class DataArguments:
     )
     holdout_dataset: Optional[str] = field(
         default="",
-        metadata={"help": "Which dataset will be used as a holdout-set (wav_path or wav_tele_path). Defaults to not using a holdout-set"},
+        metadata={"help": "Which dataset will be used as a holdout-set. Defaults to not using a holdout-set"},
     )
     holdout_dataset_num_train: Optional[int] = field(
         default=0,
@@ -73,6 +73,10 @@ class DataArguments:
 
 @dataclass
 class DatasetArguments:
+    """
+    
+    """
+
     k_fold: Optional[int] = field(
         default=5,
         metadata={"help": "The number of fold for k-fold cross-validation"},
@@ -91,14 +95,6 @@ class DatasetArguments:
     )
     use_preset_split: Optional[bool] = field(
         default=True, metadata={"help": "Whether to use the preset datasplits. This will override the split-percentages"}
-    )
-    iemocap_test_session: Optional[str] = field(
-        default="1",
-        metadata={"help": "Which of the sessions that will be used for testing"},
-    )
-    iemocap_val_session: Optional[str] = field(
-        default="2",
-        metadata={"help": "Which of the sessions that will be used for validation"},
     )
     esd_lang: Optional[str] = field(
         default="both",

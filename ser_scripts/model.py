@@ -24,66 +24,6 @@ from transformers import (
 from transformers.modeling_outputs import SequenceClassifierOutput
 
 
-################### MLP (Deprecated) ###################
-class MLP(nn.Module):
-    
-    def __init__(self, input_size, num_labels):
-        super().__init__()
-        
-        hidden_size = [256, 256]
-        
-        self.layers = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(input_size, hidden_size[0]),
-            nn.ReLU(),
-            nn.Linear(hidden_size[0], hidden_size[1]),
-            nn.ReLU(),
-            nn.Linear(hidden_size[1], num_labels)
-        )
-    
-    def forward(self, x):
-        return self.layers(x)
-
-class Wav2Vec2ForSequenceClassificationMLP(Wav2Vec2ForSequenceClassification):
-    def __init__(self, config):
-        super().__init__(config)
-
-        self.wav2vec2 = Wav2Vec2Model(config)
-        num_layers = config.num_hidden_layers + 1  # transformer layers + input embeddings
-        if config.use_weighted_layer_sum:
-            self.layer_weights = nn.Parameter(torch.ones(num_layers) / num_layers)
-        self.projector = nn.Linear(config.hidden_size, config.classifier_proj_size)
-        self.classifier = MLP(config.classifier_proj_size, config.num_labels)
-
-        self.init_weights()
-
-class UniSpeechSatForSequenceClassificationMLP(UniSpeechSatForSequenceClassification):
-    def __init__(self, config):
-        super().__init__(config)
-
-        self.unispeech_sat = UniSpeechSatModel(config)
-        num_layers = config.num_hidden_layers + 1  # transformer layers + input embeddings
-        if config.use_weighted_layer_sum:
-            self.layer_weights = nn.Parameter(torch.ones(num_layers) / num_layers)
-        self.projector = nn.Linear(config.hidden_size, config.classifier_proj_size)
-        self.classifier = MLP(config.classifier_proj_size, config.num_labels)
-
-        self.init_weights()
-
-class UniSpeechForSequenceClassificationMLP(UniSpeechForSequenceClassification):
-    def __init__(self, config):
-        super().__init__(config)
-
-        self.unispeech = UniSpeechModel(config)
-        num_layers = config.num_hidden_layers + 1  # transformer layers + input embeddings
-        if config.use_weighted_layer_sum:
-            self.layer_weights = nn.Parameter(torch.ones(num_layers) / num_layers)
-        self.projector = nn.Linear(config.hidden_size, config.classifier_proj_size)
-        self.classifier = MLP(config.classifier_proj_size, config.num_labels)
-
-        self.init_weights()
-
-
 ################### Linear Classification Heads ###################
 class LinearHead(nn.Module):
 
