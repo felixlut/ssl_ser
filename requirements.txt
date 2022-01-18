@@ -17,4 +17,4 @@ sympy
 nose
 scipy 
 
-git+https://github.com/felixlut/SER_dataloader.git@dev
+git+https://github.com/felixlut/SER_dataloader.git@main
