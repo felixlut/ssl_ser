@@ -99,7 +99,7 @@ class LinearHead(nn.Module):
         return x
 
 class LinearHeadExtended(nn.Module):
-    # Based on RobertaHead
+    # Based on RobertaClassificationHead (https://github.com/huggingface/transformers/blob/05fa1a7ac17bb7aa07b9e0c1e138ecb31a28bbfe/src/transformers/models/roberta/modeling_roberta.py#L1438)
 
     def __init__(self, config):
         super().__init__()
@@ -211,7 +211,7 @@ class Wav2Vec2ForSequenceClassificationLinearHeadExtended(Wav2Vec2ForSequenceCla
         self.init_weights()
 
 class Wav2Vec2ForSequenceClassificationMultiLayer(Wav2Vec2ForSequenceClassification):
-    # Set SequenceClassifierOutput.hidden_states to None, otherwise OOM 
+    # Set SequenceClassifierOutput.hidden_states to None in the return statement, otherwise OOM 
     
     def forward(
         self,
@@ -644,6 +644,8 @@ class WavLMForSequenceClassificationLinearHeadExtended(WavLMForSequenceClassific
 @dataclass
 class DataCollatorEmoWithPadding:
     """
+    Based on Huggingface: https://github.com/huggingface/transformers/blob/9a06b6b11bdfc42eea08fa91d0c737d1863c99e3/examples/research_projects/wav2vec2/run_asr.py#L81
+
     Data collator that will dynamically pad the inputs received.
     Args:
         feature_extractor (:class:`~transformers.Wav2Vec2FeatureExtractor`)

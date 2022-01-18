@@ -1,3 +1,5 @@
+# Based on Huggingface ASR sripts (https://github.com/huggingface/transformers/tree/9a06b6b11bdfc42eea08fa91d0c737d1863c99e3/examples/research_projects/wav2vec2)
+
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -5,7 +7,7 @@ from typing import Optional
 @dataclass
 class ModelArguments:
     """
-    Arguments pertaining to which model/config/tokenizer we are going to fine-tune from.
+    Arguments for the model which is going to be fine-tuned
     """
 
     model_checkpoint: str = field(
