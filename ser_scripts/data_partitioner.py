@@ -116,21 +116,19 @@ def partition_datasets(data, dataset_list, dataset_args, seed):
     for subset in dataset_list:
         if dataset_args.use_preset_split:
             train_df, test_df, val_df = _load_preset_dataset_partitions(data, subset, dataset_args)
-
-            # TODO: Proper fix
-            bad_path = 'home/fellut/speech_emotion_recognition/datasets/'
-            good_path = data.dataset_path
-            train_df['wav_tele_path'] = train_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
-            test_df['wav_tele_path'] = test_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
-            val_df['wav_tele_path'] = val_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
-
-            train_df['wav_path'] = train_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
-            test_df['wav_path'] = test_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
-            val_df['wav_path'] = val_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
-
         else:
             train_df, test_df, val_df = _load_dataset_partitions(data, subset, dataset_args, seed)
         
+        # TODO: Proper fix
+        bad_path = 'home/fellut/speech_emotion_recognition/datasets/'
+        good_path = data.dataset_path
+        train_df['wav_tele_path'] = train_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
+        test_df['wav_tele_path'] = test_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
+        val_df['wav_tele_path'] = val_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))
+
+        train_df['wav_path'] = train_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
+        test_df['wav_path'] = test_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
+        val_df['wav_path'] = val_df['wav_path'].apply(lambda x: x.replace(bad_path, good_path))
         
         partitioned_data.append({
             'train': train_df,
