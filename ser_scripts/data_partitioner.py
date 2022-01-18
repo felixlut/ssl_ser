@@ -119,7 +119,7 @@ def partition_datasets(data, dataset_list, dataset_args, seed):
         else:
             train_df, test_df, val_df = _load_dataset_partitions(data, subset, dataset_args, seed)
         
-        # TODO: Proper fix
+        # TODO: Proper fix. Hardcoded path in csv-files, remove these and only keep file_names. Just derive actual path later 
         bad_path = 'home/fellut/speech_emotion_recognition/datasets/'
         good_path = data.dataset_path
         train_df['wav_tele_path'] = train_df['wav_tele_path'].apply(lambda x: x.replace(bad_path, good_path))

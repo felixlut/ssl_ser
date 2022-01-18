@@ -74,7 +74,7 @@ class DataArguments:
 @dataclass
 class DatasetArguments:
     """
-    
+    Arguments for how the data should be handled
     """
 
     k_fold: Optional[int] = field(
