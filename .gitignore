@@ -1,0 +1,13 @@
+# Local logs
+baseline_logs/
+chi_logs/
+chi_logs_val+test/
+holdout_logs/
+model_comparison_logs/
+phone_logs/
+
+# Local cache
+ser_scripts/__pycache__
+
+# Local dataset storage
+ser_scripts/datasets/
