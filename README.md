@@ -57,13 +57,17 @@ Test:
 
 # Data
 The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, and should have the below described structure overall. Reading the data and transforming it to Dataframes is done by [SER_dataloader](https://github.com/felixlut/SER_dataloader), which relies on the data being stored like this. 
-- dataset_name
-    - files:
-        - train.csv (pre-defined train/test/val splits)
-        - test.csv
-        - val.csv
-        - Maybe addition csv files storing dataset-specific info (ex. actor_2_gender.csv) 
-    - directories (either or both are fine):
-        - wav/wav/ (contains all the wav_files, in the original quality)
-        - wav_telephone/wav_telephone (wav_files after phone_filter)
-        - (Yes, 2 layers of wav(_telephone), kaggle datahandling is werid)
+
+    .
+    ├── datasets
+        ├── dataset_name
+            ├── wav/wav                         # 2 layers of wav, kaggle datahandling is weird...
+            |   ├── file_abc123.wav
+            |   └── ...
+            ├── wav_telephone/wav_telephone     # same as for wav, 2 layers cuz kaggle...
+            |   ├── file_abc123.wav
+            |   └── ...
+            ├── train.csv                       # Preset train/test/validation-splits 
+            ├── test.csv
+            ├── val.csv
+            └── meta_data.csv                   # Possibly extra csv:s containing some metadata used for constructing the dataframes, ex. actor_2_gender.csv
