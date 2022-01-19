@@ -1,9 +1,13 @@
 # Speech Emotion Recognition based on pre-trained models using Self-Supervised Learning
-This project is part of a master's thesis for the: course DA231X - Degree Project in Computer Science and Engineering, Second Cycle 30hp
+This project is part of a master's thesis for KTH: course DA231X - Degree Project in Computer Science and Engineering, Second Cycle 30hp
 
 Heavily influenced by Huggingface's ASR scripts for wav2vec2 (link [here](https://github.com/huggingface/transformers/tree/9a06b6b11bdfc42eea08fa91d0c737d1863c99e3/examples/research_projects/wav2vec2)). 
 
 # Get started
+## Prerequisites
+To run the project Docker needs to be installed, as well as uploading the data to your local repository. The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```. 
+
+## Step-by-step
 Enter the following commands to the command line to setup and run the scripts
 1. ```docker build -t ser_env .```
 2. ```docker run -it --gpus device=0 -v $(pwd)/ser_scripts:/workspace/ser_scripts:ro ser_env```
@@ -47,3 +51,16 @@ Test:
 * ***test_trained_model*** - Run an old model created by one of the run-scripts on custom data
 * ***test_trained_model_wandb*** - Same as above, but load model from wandb (delete after I've merged the two)
 * ***test_inference_time*** - Test how long different parts of the inference process take
+
+
+# Data
+The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, and should have the below described structure overall. Reading the data and transforming it to Dataframes is done by [SER_dataloader](https://github.com/felixlut/SER_dataloader), which relies on the data being stored like this. 
+- dataset_name
+    - files:
+        - train.csv (pre-defined train/test/val splits)
+        - test.csv
+        - val.csv
+        - Maybe addition csv files storing dataset-specific info (ex. actor_2_gender.csv) 
+    - directories (either or both are fine):
+        - wav (contains all the wav_files, in the original quality)
+        - wav_telephone (wav_files after phone_filter)
