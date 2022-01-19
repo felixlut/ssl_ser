@@ -59,15 +59,16 @@ Test:
 The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, and should have the below described structure overall. Reading the data and transforming it to Dataframes is done by [SER_dataloader](https://github.com/felixlut/SER_dataloader), which relies on the data being stored like this. The train/test/val.csv:s contain preset partitons of all the datasets and can be used for reproducibility (use ```--use_preset_split true``` to use this preset in the run-scripts, otherwise the partitioning will be random).
 
     .
-    ├── datasets
-        ├── dataset_name
-            ├── wav/wav                         # 2 layers of wav, kaggle datahandling is weird...
-            |   ├── file_abc123.wav
-            |   └── ...
-            ├── wav_telephone/wav_telephone     # same as for wav, 2 layers cuz kaggle...
-            |   ├── file_abc123.wav
-            |   └── ...
-            ├── train.csv                       # Preset train/test/validation-splits 
-            ├── test.csv
-            ├── val.csv
-            └── meta_data.csv                   # Possibly extra csv:s containing some metadata used for constructing the dataframes, ex. actor_2_gender.csv
+    ├── ser_scripts
+        ├── datasets
+            ├── dataset_name
+                ├── wav/wav                         # 2 layers of wav, kaggle datahandling is weird...
+                |   ├── file_abc123.wav
+                |   └── ...
+                ├── wav_telephone/wav_telephone     # same as for wav, 2 layers cuz kaggle...
+                |   ├── file_abc123.wav
+                |   └── ...
+                ├── train.csv                       # Preset train/test/validation-splits 
+                ├── test.csv
+                ├── val.csv
+                └── meta_data.csv                   # Possibly extra csv:s containing some metadata used for constructing the dataframes, ex. actor_2_gender.csv
