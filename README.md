@@ -56,7 +56,7 @@ Test:
 
 
 # Data
-The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, and should have the below described structure overall. Reading the data and transforming it to Dataframes is done by [SER_dataloader](https://github.com/felixlut/SER_dataloader), which relies on the data being stored like this. 
+The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, and should have the below described structure overall. Reading the data and transforming it to Dataframes is done by [SER_dataloader](https://github.com/felixlut/SER_dataloader), which relies on the data being stored like this. The train/test/val.csv:s contain preset partitons of all the datasets and can be used for reproducibility (use ```--use_preset_split true``` to use this preset in the run-scripts, otherwise the partitioning will be random).
 
     .
     ├── datasets
