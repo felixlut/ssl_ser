@@ -62,5 +62,6 @@ The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, 
         - val.csv
         - Maybe addition csv files storing dataset-specific info (ex. actor_2_gender.csv) 
     - directories (either or both are fine):
-        - wav (contains all the wav_files, in the original quality)
-        - wav_telephone (wav_files after phone_filter)
+        - wav/wav/ (contains all the wav_files, in the original quality)
+        - wav_telephone/wav_telephone (wav_files after phone_filter)
+        - (Yes, 2 layers of wav(_telephone), kaggle datahandling is werid)
