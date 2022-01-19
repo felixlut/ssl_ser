@@ -14,7 +14,7 @@ Enter the following commands to the command line to setup and run the scripts
 1. ```docker build -t ser_env .```
 2. ```docker run -it --gpus device=0 -v $(pwd)/ser_scripts:/workspace/ser_scripts:ro ser_env```
     * To run a custom script instead of the regular run_training.sh as defined in the Dockerfile:
-        * ```docker run -it --gpus device=0 -v $(pwd)/ser_scripts:/workspace/ser_scripts:ro ser_env bash ser_scripts/run_xval.sh ```
+    ```docker run -it --gpus device=0 -v $(pwd)/ser_scripts:/workspace/ser_scripts:ro ser_env bash ser_scripts/run_xval.sh ```
 
 Change any parameters in ```run_x.sh``` to customize the run. The ```ser_scripts``` directory is loaded as a volume in the container, so any changes done locally will be seen in the container as well. 
 
