@@ -3,6 +3,8 @@ This project is part of a master's thesis for KTH: course DA231X - Degree Projec
 
 Heavily influenced by Huggingface's ASR scripts for wav2vec2 (link [here](https://github.com/huggingface/transformers/tree/9a06b6b11bdfc42eea08fa91d0c737d1863c99e3/examples/research_projects/wav2vec2)). 
 
+Sister directory for handling the sounds-files - [SER_dataloader](https://github.com/felixlut/SER_dataloader)
+
 # Get started
 ## Prerequisites
 To run the project Docker needs to be installed, as well as uploading the data to your local repository. The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```. 
