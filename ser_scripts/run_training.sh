@@ -1,5 +1,5 @@
 export MODEL=facebook/wav2vec2-large-xlsr-53 #microsoft/unispeech-sat-large #facebook/wav2vec2-large #output/tmp/
-# Remember to change model in run_training.py
+# Remember to change model_type in run_training.py if changing base model type (i.e. wav2vec2 --> hubert/unispeech/wavlm)
 
 export RUN_NAME=compare_xlsr-53
 export UPLOAD_MODEL=true

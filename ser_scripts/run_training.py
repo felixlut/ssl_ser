@@ -83,6 +83,8 @@ def configure_logger(model_args: ModelArguments, training_args: TrainingArgument
 
 
 def main():
+    model_type = Wav2Vec2ForSequenceClassificationLinearHeadExtended
+
     seed = 1337
 
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, DatasetArguments))
@@ -100,7 +102,7 @@ def main():
     label2id_merged, id2label = generate_reverse_dict(label2id)
 
     # Pick model
-    model = Wav2Vec2ForSequenceClassificationLinearHeadExtended.from_pretrained(
+    model = model_type.from_pretrained(
         model_args.model_checkpoint,
         cache_dir=model_args.cache_dir,
         label2id=label2id,

@@ -83,6 +83,8 @@ def configure_logger(model_args: ModelArguments, training_args: TrainingArgument
 
 
 def main():
+    model_type = UniSpeechSatForSequenceClassificationLinearHeadExtended
+
     seed = 1337
 
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, DatasetArguments))
@@ -120,7 +122,7 @@ def main():
         test_df = test_df.loc[test_df.emo.isin(label2id.keys())]
 
         # Pick model
-        model = Wav2Vec2ForSequenceClassificationLinearHeadExtended.from_pretrained(
+        model = model_type.from_pretrained(
             model_args.model_checkpoint,
             cache_dir=model_args.cache_dir,
             label2id=label2id,

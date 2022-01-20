@@ -1,4 +1,5 @@
 export MODEL=facebook/wav2vec2-large 
+# Remember to change model_type in run_phone_test.py if changing base model type (i.e. wav2vec2 --> hubert/unispeech/wavlm)
 
 export RUN_NAME=mix_wav2-large_cremad_phone-vs-native
 export UPLOAD_MODEL=false

@@ -1,7 +1,7 @@
-export MODEL=facebook/wav2vec2-large-xlsr-53 #microsoft/unispeech-sat-large #facebook/wav2vec2-large #output/tmp/
-# Remember to change model in run_training.py
+export MODEL=facebook/microsoft/unispeech-sat-large #microsoft/unispeech-sat-large #facebook/wav2vec2-large #output/tmp/
+# Remember to change model_type in run_xval.py if changing base model type (i.e. wav2vec2 --> hubert/unispeech/wavlm)
 
-export RUN_NAME=xlsr-53_xval_5fold
+export RUN_NAME=uni-sat-large_xval_5fold
 export UPLOAD_MODEL=false
 
 export WAV_PATH=wav_tele_path # wav_path
