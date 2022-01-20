@@ -72,3 +72,13 @@ The data is supposed to be stored in ```ser_scripts/datasets/{dataset_name}```, 
                 ├── test.csv
                 ├── val.csv
                 └── meta_data.csv                   # Possibly extra csv:s containing some metadata used for constructing the dataframes, ex. actor_2_gender.csv
+
+The following datasets are implemented:
+* [Cremad-D](https://github.com/CheyneyComputerScience/CREMA-D) - ```cremad```
+* [ESD](https://github.com/HLTSingapore/Emotional-Speech-Data) - ```esd-data```
+* [Subesco](https://zenodo.org/record/4526477) - ```subesco```
+* [emoDB](https://www.kaggle.com/piyushagni5/berlin-database-of-emotional-speech-emodb) - ```emodb-data```
+* [MESD](https://data.mendeley.com/datasets/cy34mh68j9/1) - ```mesddata```
+* [EMOVO](http://voice.fub.it/activities/corpora/emovo/index.html) - ```emovodata```
+* [Oréau](https://zenodo.org/record/4405783) - ```oreaudata```
+* [emoUERJ](https://zenodo.org/record/5427549) - ```emouerj```
