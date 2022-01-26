@@ -15,7 +15,11 @@ device = "cuda"
 durations = [1, 1, 5, 10, 20]
 #durations = [10] #, 30]
 #durations = [1]
-rate = 16000
+og_rate = 8000
+up_rate = 16000
+
+upsample_algo = 'kaiser_best' # Other resampling techniques: https://librosa.org/doc/main/generated/librosa.resample.html
+
 reps = 1000
     
 pretrained_path = 'facebook/wav2vec2-large'
@@ -32,11 +36,16 @@ for duration in tqdm(durations, desc='Duration'):
     inference_results = []
     for i in tqdm(range(reps), desc='Reps'):
         # Generate a random wave of the desired duration
-        raw_signal = np.random.rand(duration * rate)
-        
+        raw_signal = np.random.rand(duration * og_rate)
+
+        # Upsample to wanted frequency
+        start_time = time.time()
+        raw_signal = librosa.resample(raw_signal, sr, up_rate, res_type=upsample_algo)
+        upsample_time = time.time() - start_time
+ 
         # Pre process file to input_values
         start_time = time.time()
-        input_values = feature_extractor(raw_signal, sampling_rate=rate, return_tensors="pt").input_values
+        input_values = feature_extractor(raw_signal, sampling_rate=up_rate, return_tensors="pt").input_values
         pre_proc_time = time.time() - start_time
 
         # Move data to GPU
@@ -52,11 +61,12 @@ for duration in tqdm(durations, desc='Duration'):
         classify_time = time.time() - start_time
 
         inference_results.append({
-            'pre_proccess': pre_proc_time,
-            'to_gpu'      : data_2_gpu_time,
-            'classify'    : classify_time,
-            'inference'   : pre_proc_time + data_2_gpu_time + classify_time,
-            'y'           : label,
+            'upsample_time': upsample_time,
+            'pre_proccess' : pre_proc_time,
+            'to_gpu'       : data_2_gpu_time,
+            'classify'     : classify_time,
+            'inference'    : pre_proc_time + data_2_gpu_time + classify_time,
+            'y'            : label,
         })
 
     inf_res_df = pd.DataFrame(inference_results)
