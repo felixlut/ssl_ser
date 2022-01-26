@@ -51,7 +51,6 @@ Run:
 
 Test:
 * ***test_trained_model*** - Run an old model created by one of the run-scripts on custom data
-* ***test_trained_model_wandb*** - Same as above, but load model from wandb (delete after I've merged the two)
 * ***test_inference_time*** - Test how long different parts of the inference process take
 
 

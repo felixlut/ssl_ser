@@ -55,34 +55,70 @@ if version.parse(torch.__version__) >= version.parse("1.6"):
     _is_native_amp_available = True
     from torch.cuda.amp import autocast
 
-
-data_splits = ['val', 'test']
-model_checkpoints = ['29900']
-model_top_dir = 'output/tmp/'
+############# Settings ############# 
+# Random
 seed = 1337
 cache_dir='hf_cache/'
+
+# Load 
+local_run = False # Whether to load local model or from wandb
+wandb_path = 'fellut/huggingface/3b4xr0y8' # If loading from wandb
+model_checkpoints = ['31806'] # Number corresponds to the save_step the checkpoint was saved from 
 base_model = 'facebook/wav2vec2-large-xlsr-53'
+model_type = Wav2Vec2ForSequenceClassificationLinearHeadExtended
 
-top_data_path = '/workspace/ser_scripts/datasets/'
-data = Dataloader(top_data_path)
-dataset_list = ['cremad', 'emodb', 'emouerj', 'emovo', 'esd', 'mesd', 'oreau', 'subesco']
-#dataset_list = ['emodb']
-dataset_args = DatasetArguments(use_preset_split=True)
-train_df, test_df, val_df = partition_datasets(data, dataset_list, dataset_args)
-dataset_df_by_split = {
-    'train': train_df,
-    'test': test_df,
-    'val': val_df,
-}
-
+# Data
+top_data_path = '/workspace/ser_scripts/datasets/' # The directory keeping the data
 label2id = {
     'Angry'  : 0, 
     'Happy'  : 1,
-    #'Excited': 1,
+    #'Excited': 1, # Only for IEMOCAP, comment this out for other sets
     'Sad'    : 2,
     'Neutral': 3,
 }
 label2id_merged, id2label = generate_reverse_dict(label2id)
+dataset_list = ['cremad', 'emodb', 'emouerj', 'emovo', 'esd', 'mesd', 'oreau', 'subesco']
+#dataset_list = ['emodb']
+use_whole_dataset = True # Whether to use the preset splits, or the whole set
+
+####################################
+
+# Source of model
+if local_run:
+    print('Local run')
+    source_dir = 'output/tmp/'
+
+else:
+    print('Download model')
+    run = wandb.init()
+    artifact = run.use_artifact(wandb_path+':v0', type='model')
+    source_dir = artifact.download() 
+
+# Split the data
+data = Dataloader(top_data_path)
+dataset_args = DatasetArguments(use_preset_split=not use_whole_dataset)
+if use_whole_dataset:
+    print('Using full dataset')
+
+    dataset_df_by_split = {}
+    for subset in dataset_list:
+        subset_df = data.load_dataset(subset)
+        subset_df = subset_df.loc[subset_df.emo.isin(label2id.keys())]
+        dataset_df_by_split[subset] = subset_df
+        
+else:
+    print('Using preset splits')
+
+    train_df, test_df, val_df = partition_datasets(data, dataset_list, dataset_args, seed)
+    train_df = train_df.loc[train_df.emo.isin(label2id.keys())]
+    test_df = test_df.loc[test_df.emo.isin(label2id.keys())]
+    val_df = val_df.loc[val_df.emo.isin(label2id.keys())]
+
+    dataset_df_by_split = {
+        # 'train': train_df, 
+        'test': test_df,
+        'val': val_df,
+    }
 
 def compute_metrics(pred):
     logits = pred.predictions
@@ -107,22 +143,21 @@ def prepare_dataset(batch):
     batch["input_values"] = np.squeeze(feature_extractor(batch["speech"], sampling_rate=16000).input_values)
     return batch
 
-model_for_settings = Wav2Vec2ForSequenceClassificationLinearHeadExtended.from_pretrained(base_model)
-feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=False, return_attention_mask=(model_for_settings.config.feat_extract_norm == "layer"))
-#feature_extractor = AutoFeatureExtractor.from_pretrained(artifact_dir, do_normalize=False) 
+feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=False, 
+                            return_attention_mask=(model_type.from_pretrained(base_model).config.feat_extract_norm == "layer"))
 
-for split in data_splits:
+for split in dataset_df_by_split:  # evaluation_splits
     df = dataset_df_by_split[split]
     dataset = datasets.Dataset.from_pandas(df)
-    dataset.save_to_disk('dataset_delete_when_done/')
-    dataset = datasets.load_from_disk('dataset_delete_when_done/')
+    dataset.save_to_disk('dataset_cache/')
+    dataset = datasets.load_from_disk('dataset_cache/')
 
-    dataset = dataset.map(prepare_sample, remove_columns=['wav_tele_path', 'emo'], desc='Prep sample')
-    dataset = dataset.map(prepare_dataset, num_proc=4, remove_columns=['speech'], desc='Prep dataset')
+    dataset = dataset.map(prepare_sample, remove_columns=['wav_tele_path', 'emo'], desc='Prep sample - ' + str(split))
+    dataset = dataset.map(prepare_dataset, num_proc=4, remove_columns=['speech'], desc='Prep dataset - ' + str(split))
     
     for checkpoint_id in model_checkpoints:
-        model_dir = model_top_dir + '/checkpoint-'+checkpoint_id            
-        model = Wav2Vec2ForSequenceClassificationLinearHeadExtended.from_pretrained(
+        model_dir = source_dir + '/checkpoint-'+checkpoint_id
+        model = model_type.from_pretrained(
             model_dir,
             label2id=label2id,
             id2label=id2label,
