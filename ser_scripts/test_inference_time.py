@@ -66,7 +66,7 @@ for duration in tqdm(durations, desc='Duration'):
             'pre_proccess' : pre_proc_time,
             'to_gpu'       : data_2_gpu_time,
             'classify'     : classify_time,
-            'inference'    : pre_proc_time + data_2_gpu_time + classify_time,
+            'inference'    : upsample_time + pre_proc_time + data_2_gpu_time + classify_time,
             'y'            : label,
         })
 
