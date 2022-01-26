@@ -9,6 +9,7 @@ import numpy as np
 import time
 import pandas as pd
 import torch
+import librosa
 
 
 device = "cuda"
@@ -40,7 +41,7 @@ for duration in tqdm(durations, desc='Duration'):
 
         # Upsample to wanted frequency
         start_time = time.time()
-        raw_signal = librosa.resample(raw_signal, sr, up_rate, res_type=upsample_algo)
+        raw_signal = librosa.resample(raw_signal, og_rate, up_rate, res_type=upsample_algo)
         upsample_time = time.time() - start_time
  
         # Pre process file to input_values
